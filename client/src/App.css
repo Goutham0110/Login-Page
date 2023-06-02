@@ -1,0 +1,15 @@
+.App{
+  display: flex;
+  justify-content: center;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap');
+
+.sample{
+    color:rgb(44, 54, 57);/*bg2*/
+    color:rgb(63, 78, 79);/*bg1*/
+    color:rgb(162, 123, 92);/*fnt1*/
+    color:rgb(211, 162, 107);/*fnt2*/
+    color:rgb(220, 215, 201);/*fnt3*/
+    border: 3px solid red;
+} 
