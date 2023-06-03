@@ -28,7 +28,7 @@ exports.loginUser = async (req, res) => {
     if (!userExist.length) {
       return res.status(404).json({
         status: "failure",
-        message: "user doesn't exist try signingup",
+        message: "Invalid mail id, sign up",
       });
     }
 
@@ -39,7 +39,7 @@ exports.loginUser = async (req, res) => {
     if (!passwordMatch.length) {
       return res.status(404).json({
         status: "failure",
-        message: "incorrect password",
+        message: "Incorrect password",
       });
     }
     const loginRecord = await LoginRecords.create(req.body);

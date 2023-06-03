@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './LoginPage.css';
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -8,6 +8,7 @@ const LoginPage =()=>{
 
     const [mailid,setMailid]=useState();
     const [password,setPassword]=useState();
+    const [mandate,setMandate]=useState("");
     const navigate = useNavigate();
     const loginAPI="http://localhost:5000/login";
 
@@ -23,14 +24,21 @@ const LoginPage =()=>{
                         "password":password
                     })
                 })
+        const resJson= await res.json();
         if(res.status===200){
             navigate(`/${mailid}`);
-        }
-        else{
-            alert("Invalid Credentials")
-            console.log(res)
+        }else if(res.status===404){
+            setMandate(resJson.message);
+            return;
+        }else{
+            setMandate("server Error")
         }
     }
+
+    useEffect(()=>{
+        const element=document.getElementsByClassName("mandate")[0];
+        mandate?element.style.display="block":element.style.display="none";
+    },[mandate])
 
     return(
         
@@ -47,10 +55,15 @@ const LoginPage =()=>{
                         <input type="password" placeholder="password" name="password" onChange={(e)=>setPassword(e.target.value)}/>
                     </div>
                     
+                    <div className="mandate">
+                        <p>* {mandate}</p>
+                    </div>
+
                     <div className="login">
                         <input type="submit" name="submit"/>
                     </div>
                 </form>
+                
             </div>
             <div className="signup">
                 <div className="sign-up">

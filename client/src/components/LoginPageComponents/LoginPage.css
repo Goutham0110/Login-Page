@@ -74,6 +74,20 @@
     margin-top: 15px;
 }
 
+.mandate{
+    padding:0px 20px 0px 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.mandate p{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    color:rgba(191, 41, 41, 0.9);
+    text-align: left;
+}
+
 
 
 
