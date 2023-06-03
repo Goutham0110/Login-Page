@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './ProfilePage.css';
 import { Link, useParams } from "react-router-dom";
 
-const LandingPage =()=>{
+const LandingPage =({loggedIn,setLoggedIn})=>{
     const {profile}=useParams();
     const [fetchStatus,setFetchStatus]=useState(false);
     const [FirstName,setFirstName]=useState("first name is not available");
@@ -11,6 +11,7 @@ const LandingPage =()=>{
     const [country,setCountry]=useState("not available");
     const [signupDate,setSignupDate]=useState("not available");
     const [mounted,setMounted]=useState(false);
+    const [message,setMessage]=useState();
 
     async function fetchUserInfo(profile){
         const res=await fetch(`http://localhost:5000/${profile}`,{
@@ -31,7 +32,14 @@ const LandingPage =()=>{
     
     useEffect(()=>{
         fetchUserInfo(profile);
-    })  
+        loggedIn?setMessage("Welcome,"):setMessage("User Profile")
+        if(mounted){
+            const button=document.getElementsByClassName("logout-button-container")[0];
+            if(!loggedIn){
+                button.style.display="none";
+            }
+        } 
+    },[mounted])
 
     if(!mounted){
         return(
@@ -48,7 +56,7 @@ const LandingPage =()=>{
             
                 <div className="landing-page-container">
                     
-                    <div>Welcome,</div>
+                    <div>{message}</div>
                     <div className="card-1">
                         <div>{FirstName} {LastName}</div>
                     </div>
