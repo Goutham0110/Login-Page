@@ -6,7 +6,7 @@ const SignupPage=()=>{
     const[firstName,setFirstName] = useState("");
     const[lastName,setLastName] = useState("");
     const[mail,setMail] = useState("");
-    const[country,setCountry] = useState("");
+    const[country,setCountry] = useState("India");
     const[setpassword,setSetpassword] = useState("");
     const[confirmpassword,setConfirmpassword]= useState("");
     const [mandate,setMandate]=useState("");
@@ -18,30 +18,38 @@ const SignupPage=()=>{
 
     async function handleSubmit(e){
         e.preventDefault();
+        const element=document.getElementsByClassName("mandate")[0];
         if(!submitEnabled){
             return;
         }
-        const res=await fetch(signupAPI,{
-                    method:"POST",
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body:JSON.stringify({
-                        "firstName":firstName,
-                        "lastName":lastName,
-                        "mail":mail,
-                        "country":country,
-                        "password":password
+        try{
+            const res=await fetch(signupAPI,{
+                        method:"POST",
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body:JSON.stringify({
+                            "firstName":firstName,
+                            "lastName":lastName,
+                            "mail":mail,
+                            "country":country,
+                            "password":password
+                        })
                     })
-                })
-        if(res.status===200){
-            navigate(`/${mail}`);
-        }else if(res.status===400){
-            alert("user already exists")
-        }
-        else{
-            console.log(res);
-            alert("Invalid Credentials")
+            if(res.status===200){
+                navigate(`/`);
+            }else if(res.status===400){
+                element.style.display="block";
+                setMandate("user already exists")
+            }
+            else{
+                element.style.display="block";
+                setMandate("Invalid Credentials")
+            }
+        }catch(err){
+            element.style.display="block";
+            setMandate("server error");
+            console.log("Server error");
         }
     }
 
@@ -49,7 +57,7 @@ const SignupPage=()=>{
 
     useEffect(()=>{
         const element=document.getElementsByClassName("mandate")[0];
-        element.style.display="none";
+        const button=document.getElementsByClassName("signup-btn")[0];
 
         if(!((/^[A-Za-z]*$/.test(firstName))&&(/^[A-Za-z]*$/.test(lastName)))){
             element.style.display="block";
@@ -67,17 +75,21 @@ const SignupPage=()=>{
             element.style.display="block";
             setMandate("Confirm password does not match New Password");
         }
-        else{
-            element.style.display="none";
-            setMandate("");
-        }
-
-        const button=document.getElementsByClassName("signup-btn")[0];
-        if(mandate==="" && firstName!=="" && lastName!=="" && mail!=="" && setpassword!=="" && confirmpassword!==""){
+        
+        else if(firstName!=="" && lastName!=="" && mail!=="" && setpassword!=="" && setpassword==confirmpassword){
+            if(mandate!="server error"){
+                element.style.display="none";
+                setMandate("");
+            }
             setsubmitEnabled(true);
             button.style.color="rgba(255,255,255,0.8)";
             button.style.cursor="pointer";
-        }else{
+        }
+        else{
+            if(!mandate){
+                element.style.display="none";
+                setMandate("");
+            }
             button.style.color="rgba(255,255,255,0.2)";
             button.style.cursor="auto";
         }

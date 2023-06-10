@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 
-const LoginPage =()=>{
+const LoginPage =({checkLoginStatus})=>{
 
     const [mailid,setMailid]=useState();
     const [password,setPassword]=useState();
@@ -14,26 +14,39 @@ const LoginPage =()=>{
 
     async function handleSubmit(e){
         e.preventDefault();
-        const res=await fetch(loginAPI,{
-                    method:"POST",
-                    headers:{
-                        'Content-Type': 'application/json'
-                    },
-                    body:JSON.stringify({
-                        "mail":mailid,
-                        "password":password
+        const element=document.getElementsByClassName("mandate")[0];
+        try{
+            const res=await fetch(loginAPI,{
+                        method:"POST",
+                        credentials: "include",
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body:JSON.stringify({
+                            "mail":mailid,
+                            "password":password
+                        })
                     })
-                })
-        const resJson= await res.json();
-        if(res.status===200){
-            navigate(`/${mailid}`);
-        }else if(res.status===404){
-            setMandate(resJson.message);
-            return;
-        }else{
-            setMandate("server Error")
+            const resJson= await res.json();
+            checkLoginStatus();
+            if(res.status===200){
+                navigate(`/${mailid}`);
+            }else if(res.status===404){
+                element.style.display="block"
+                setMandate(resJson.message);
+                return;
+            }else{
+                element.style.display="block"
+                setMandate("server Error");
+            }
+
+        }catch(err){
+            element.style.display="block"
+            setMandate("server Error");
+            console.log("Server Error");
         }
     }
+
 
     useEffect(()=>{
         const element=document.getElementsByClassName("mandate")[0];

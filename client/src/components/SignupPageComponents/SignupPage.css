@@ -15,7 +15,7 @@
 .signupcred{
     margin-top: 20px;
     padding: 10px;
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(52, 6, 6, 0.05);
     backdrop-filter: blur(30px);
     color: rgba(255,255,255,0.8);
     border-radius: 12px;
@@ -35,7 +35,7 @@
     margin:7px 0px;
     padding:10px 30px;
     border-radius: 12px;
-    border-style:ridge;
+    border-style:none;
     font-family: Quicksand;
     font-size: 15px;
     width:250px;
@@ -55,7 +55,7 @@
     margin:7px 0px;
     padding:10px 30px;
     border-radius: 12px;
-    border-style:ridge;
+    border-style:none;
     font-family: Quicksand;
     font-size: 15px;
     width:250px;
