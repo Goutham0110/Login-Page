@@ -1,5 +1,7 @@
 const { User } = require("../models/models");
 const { LoginRecords } = require("../models/models");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 exports.createUser = async (req, res) => {
   try {
@@ -10,13 +12,30 @@ exports.createUser = async (req, res) => {
         message: "user already exists",
       });
     }
-    const user = await User.create(req.body);
+    let user;
+    await bcrypt.hash(
+      req.body.password,
+      saltRounds,
+      async function (err, hash) {
+        signupData = {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          mail: req.body.mail,
+          country: req.body.country,
+          passwordHash: hash,
+        };
+        user = await User.create(signupData);
+      }
+    );
     return res.status(200).json({
       staus: "success",
+      message: "created",
+      data: user,
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
+      message: "catching err",
       error: err,
     });
   }
@@ -24,29 +43,42 @@ exports.createUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
   try {
-    const userExist = await User.find({ mail: req.body.mail });
-    if (!userExist.length) {
+    const user = await User.find({ mail: req.body.mail });
+    if (!user.length) {
       return res.status(404).json({
         status: "failure",
         message: "Invalid mail id, sign up",
       });
     }
 
-    const passwordMatch = await User.find({
-      mail: req.body.mail,
-      password: req.body.password,
-    });
-    if (!passwordMatch.length) {
-      return res.status(404).json({
-        status: "failure",
-        message: "Incorrect password",
-      });
-    }
-    const loginRecord = await LoginRecords.create(req.body);
-    return res.status(200).json({
-      staus: "success",
-      data: loginRecord,
-    });
+    await bcrypt.compare(
+      req.body.password,
+      user[0].passwordHash,
+      async function (err, result) {
+        if (!result) {
+          return res.status(404).json({
+            status: "failure",
+            message: "Incorrect password",
+            data: result,
+          });
+        } else {
+          const loginRecord = await LoginRecords.create(req.body);
+          req.session.userCookie = {
+            firstName: user[0].firstName,
+            lastName: user[0].lastName,
+            mail: user[0].mail,
+            country: user[0].country,
+            signupDate: user[0].signupDate,
+            loginTime: loginRecord.loginTime,
+          };
+          console.log(req.session);
+          return res.status(200).json({
+            staus: "success",
+            data: loginRecord,
+          });
+        }
+      }
+    );
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -67,6 +99,27 @@ exports.userInfo = async (req, res) => {
       return res.status(200).json({
         status: "success",
         data: profileInfo,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: err,
+    });
+  }
+};
+
+exports.loginStatus = async (req, res) => {
+  try {
+    console.log(req.session);
+    if (req.session.userCookie) {
+      return res.status(200).json({
+        loggedIn: true,
+        data: req.session.userCookie,
+      });
+    } else {
+      return res.status(200).json({
+        loggedIn: false,
       });
     }
   } catch (err) {

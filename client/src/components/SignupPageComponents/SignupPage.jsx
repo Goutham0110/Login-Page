@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate,NavLink } from "react-router-dom";
 import './SignupPage.css';
 
-const SignupPage=({setLoggedIn})=>{
+const SignupPage=()=>{
     const[firstName,setFirstName] = useState("");
     const[lastName,setLastName] = useState("");
     const[mail,setMail] = useState("");
-    const[country,setCountry] = useState("");
+    const[country,setCountry] = useState("India");
     const[setpassword,setSetpassword] = useState("");
     const[confirmpassword,setConfirmpassword]= useState("");
     const [mandate,setMandate]=useState("");
@@ -37,8 +37,7 @@ const SignupPage=({setLoggedIn})=>{
                         })
                     })
             if(res.status===200){
-                setLoggedIn(true);
-                navigate(`/${mail}`);
+                navigate(`/`);
             }else if(res.status===400){
                 element.style.display="block";
                 setMandate("user already exists")

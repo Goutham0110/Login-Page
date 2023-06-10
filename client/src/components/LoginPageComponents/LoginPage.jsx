@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 
-const LoginPage =({setLoggedIn})=>{
+const LoginPage =({checkLoginStatus})=>{
 
     const [mailid,setMailid]=useState();
     const [password,setPassword]=useState();
@@ -18,6 +18,7 @@ const LoginPage =({setLoggedIn})=>{
         try{
             const res=await fetch(loginAPI,{
                         method:"POST",
+                        credentials: "include",
                         headers:{
                             'Content-Type': 'application/json'
                         },
@@ -27,8 +28,8 @@ const LoginPage =({setLoggedIn})=>{
                         })
                     })
             const resJson= await res.json();
+            checkLoginStatus();
             if(res.status===200){
-                setLoggedIn(true);
                 navigate(`/${mailid}`);
             }else if(res.status===404){
                 element.style.display="block"
@@ -38,12 +39,14 @@ const LoginPage =({setLoggedIn})=>{
                 element.style.display="block"
                 setMandate("server Error");
             }
+
         }catch(err){
             element.style.display="block"
             setMandate("server Error");
             console.log("Server Error");
         }
     }
+
 
     useEffect(()=>{
         const element=document.getElementsByClassName("mandate")[0];

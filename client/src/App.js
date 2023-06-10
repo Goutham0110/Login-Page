@@ -6,17 +6,34 @@ import SignupPage from "./components/SignupPageComponents/SignupPage";
 import { useState } from "react";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  
+  const loginStatusAPI = "http://localhost:5000/login/status";
+
+  async function checkLoginStatus() {
+    const res = await fetch(loginStatusAPI, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+    const resJson = await res.json();
+    return resJson;
+  }
+
   return (
     <div className="App">
       <Routes>
-        <Route index element={<LoginPage setLoggedIn={setLoggedIn} />} />
         <Route
-          path="/signup"
-          element={<SignupPage setLoggedIn={setLoggedIn} />}
+          index
+          element={<LoginPage checkLoginStatus={checkLoginStatus} />}
         />
-        <Route path="/:profile" element={<ProfilePage loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/:profile"
+          element={
+            <ProfilePage
+              checkLoginStatus={checkLoginStatus}
+            />
+          }
+        />
       </Routes>
     </div>
   );

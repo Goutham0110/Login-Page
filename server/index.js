@@ -2,7 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const { createUser, loginUser, userInfo } = require("./controller/controller");
+const session = require("express-session");
+var cookieParser = require("cookie-parser");
+
+const {
+  createUser,
+  loginUser,
+  userInfo,
+  loginStatus,
+} = require("./controller/controller");
 
 //db connection
 mongoose.connect("mongodb://localhost:27017/CommentLineArticles", {
@@ -16,14 +24,33 @@ db.once("open", function () {
 
 //middleware
 const app = express();
-app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+app.use(cookieParser());
+app.use(
+  session({
+    key: "userCookie",
+    secret: "cookieSecretKey",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
 app.use(express.static("public"));
 
 //APIs
 app.post("/signup", createUser);
 app.post("/login", loginUser);
+app.get("/login/status", loginStatus);
 app.get("/:profile", userInfo);
 
 //test
