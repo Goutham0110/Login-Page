@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import ProfilePage from "./components/ProfilePage";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
+import PageNotFound from "./components/PageNotFound";
 
 function App() {
   const loginStatusAPI = "http://localhost:5000/login/status";
@@ -32,6 +33,7 @@ function App() {
           path="/profile/:profile"
           element={<ProfilePage checkLoginStatus={checkLoginStatus} />}
         />
+        <Route path="*" component={PageNotFound} />
       </Routes>
     </div>
   );
