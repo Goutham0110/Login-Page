@@ -10,6 +10,7 @@ const {
   loginUser,
   userInfo,
   loginStatus,
+  logoutUser,
 } = require("./controller/controller");
 
 //db connection
@@ -24,6 +25,7 @@ db.once("open", function () {
 
 //middleware
 const app = express();
+app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
@@ -36,22 +38,24 @@ app.use(
 app.use(cookieParser());
 app.use(
   session({
-    key: "userCookie",
-    secret: "cookieSecretKey",
-    resave: false,
-    saveUninitialized: false,
+    secret: "a1s2d3f4g5h6",
+    name: "userSession", // cookies name to be put in "key" field in postman
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 1000 * 60 * 60 * 24, // this is when our cookies will expired and the session will not be valid anymore (user will be log out)
+      sameSite: false,
+      secure: false, // to turn on just in production
     },
+    resave: true,
+    saveUninitialized: false,
   })
 );
-app.use(express.static("public"));
 
 //APIs
 app.post("/signup", createUser);
 app.post("/login", loginUser);
 app.get("/login/status", loginStatus);
-app.get("/:profile", userInfo);
+app.post("/logout", logoutUser);
+app.get("/profile/:profile", userInfo);
 
 //test
 app.get("/status", (req, res) => {

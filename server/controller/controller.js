@@ -18,24 +18,43 @@ exports.createUser = async (req, res) => {
       saltRounds,
       async function (err, hash) {
         signupData = {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
+          name: req.body.name,
           mail: req.body.mail,
-          country: req.body.country,
           passwordHash: hash,
         };
         user = await User.create(signupData);
       }
     );
     return res.status(200).json({
-      staus: "success",
+      success: true,
       message: "created",
-      data: user,
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      message: "catching err",
+      message: "error",
+      error: err,
+    });
+  }
+};
+
+exports.userInfo = async (req, res) => {
+  try {
+    const profileInfo = await User.findOne({ mail: req.params.profile });
+    if (!profileInfo) {
+      return res.status(404).json({
+        success: false,
+        message: "user doesn't exist",
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        data: profileInfo,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
       error: err,
     });
   }
@@ -46,7 +65,7 @@ exports.loginUser = async (req, res) => {
     const user = await User.find({ mail: req.body.mail });
     if (!user.length) {
       return res.status(404).json({
-        status: "failure",
+        success: false,
         message: "Invalid mail id, sign up",
       });
     }
@@ -57,24 +76,18 @@ exports.loginUser = async (req, res) => {
       async function (err, result) {
         if (!result) {
           return res.status(404).json({
-            status: "failure",
+            success: false,
             message: "Incorrect password",
-            data: result,
           });
         } else {
           const loginRecord = await LoginRecords.create(req.body);
-          req.session.userCookie = {
-            firstName: user[0].firstName,
-            lastName: user[0].lastName,
-            mail: user[0].mail,
-            country: user[0].country,
-            signupDate: user[0].signupDate,
-            loginTime: loginRecord.loginTime,
-          };
-          console.log(req.session);
+          const userSession = {
+            email: user[0].mail,
+          }; // creating user session to keep user loggedin also on refresh
+          req.session.userSession = userSession; // attach user session to session object from express-session
           return res.status(200).json({
-            staus: "success",
-            data: loginRecord,
+            msg: "You have logged in successfully",
+            userSession: userSession,
           });
         }
       }
@@ -87,20 +100,16 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-exports.userInfo = async (req, res) => {
+exports.logoutUser = async (req, res) => {
   try {
-    const profileInfo = await User.findOne({ mail: req.params.profile });
-    if (!profileInfo) {
-      return res.status(404).json({
-        status: "failure",
-        message: "user doesn't exist",
+    req.session.destroy((error) => {
+      if (error) throw error;
+      res.clearCookie("userSession"); // cleaning the cookies from the user session
+      res.status(200).json({
+        success: true,
+        message: "Logged Out",
       });
-    } else {
-      return res.status(200).json({
-        status: "success",
-        data: profileInfo,
-      });
-    }
+    });
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -110,22 +119,16 @@ exports.userInfo = async (req, res) => {
 };
 
 exports.loginStatus = async (req, res) => {
-  try {
-    console.log(req.session);
-    if (req.session.userCookie) {
-      return res.status(200).json({
-        loggedIn: true,
-        data: req.session.userCookie,
-      });
-    } else {
-      return res.status(200).json({
-        loggedIn: false,
-      });
-    }
-  } catch (err) {
-    return res.status(500).json({
+  if (req.session.userSession) {
+    return res.status(200).json({
+      success: true,
+      message: "Authorized",
+      mail: req.session.userSession.email,
+    });
+  } else {
+    return res.status(401).json({
       success: false,
-      error: err,
+      message: "unauthorized",
     });
   }
 };
