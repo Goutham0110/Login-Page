@@ -17,7 +17,9 @@ function App() {
       });
       const resJson = await res.json();
       return resJson;
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (

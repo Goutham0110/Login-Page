@@ -39,7 +39,7 @@ const LoginPage =()=>{
             }
         }catch(err){
             setLoading(false)
-            console.log(loginAPI);
+            console.log(err);
             setMandate("server down");
         }
     }

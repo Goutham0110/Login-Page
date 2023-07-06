@@ -80,7 +80,7 @@ exports.loginUser = async (req, res) => {
           const loginRecord = await LoginRecords.create(req.body);
           const userSession = {
             email: user[0].mail,
-          }; // creating user session to keep user loggedin also on refresh
+          }; 
           req.session.userSession = userSession; // attach user session to session object from express-session
           return res.status(200).json({
             msg: "You have logged in successfully",
