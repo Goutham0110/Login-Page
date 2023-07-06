@@ -1,7 +1,8 @@
 const { User } = require("../models/models");
 const { LoginRecords } = require("../models/models");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
+const dotenv = require("dotenv").config();
+const saltRounds = parseInt(process.env.SALTROUNDS);
 
 exports.createUser = async (req, res) => {
   try {
@@ -12,19 +13,15 @@ exports.createUser = async (req, res) => {
         message: "user already exists",
       });
     }
-    let user;
-    await bcrypt.hash(
-      req.body.password,
-      saltRounds,
-      async function (err, hash) {
-        signupData = {
-          name: req.body.name,
-          mail: req.body.mail,
-          passwordHash: hash,
-        };
-        user = await User.create(signupData);
-      }
-    );
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(req.body.password, salt);
+    signupData = {
+      name: req.body.name,
+      mail: req.body.mail,
+      passwordHash: hash,
+    };
+    let user = await User.create(signupData);
+
     return res.status(200).json({
       success: true,
       message: "created",
@@ -33,7 +30,7 @@ exports.createUser = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "error",
-      error: err,
+      error: err.message,
     });
   }
 };
@@ -55,7 +52,7 @@ exports.userInfo = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: err,
+      error: err.message,
     });
   }
 };
@@ -95,7 +92,7 @@ exports.loginUser = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: err,
+      error: err.message,
     });
   }
 };
@@ -113,7 +110,7 @@ exports.logoutUser = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: err,
+      error: err.message,
     });
   }
 };

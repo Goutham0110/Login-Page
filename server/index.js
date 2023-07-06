@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const { MongoClient } = require("mongodb");
 const mongoose = require("mongoose");
+const dotenv = require("dotenv").config();
 const session = require("express-session");
 var cookieParser = require("cookie-parser");
 
@@ -14,8 +16,11 @@ const {
 } = require("./controller/controller");
 
 //db connection
-mongoose.connect("mongodb://localhost:27017/CommentLineArticles", {
+const url = process.env.MONGODB_CONNECTION_URL;
+
+mongoose.connect(url, {
   useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
@@ -30,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [process.env.CORS_ORIGIN],
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -38,7 +43,7 @@ app.use(
 app.use(cookieParser());
 app.use(
   session({
-    secret: "a1s2d3f4g5h6",
+    secret: process.env.SECRET,
     name: "userSession", // cookies name to be put in "key" field in postman
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // this is when our cookies will expired and the session will not be valid anymore (user will be log out)
@@ -62,6 +67,6 @@ app.get("/status", (req, res) => {
   res.send("Server Alive");
 });
 
-app.listen(5000, () => {
+app.listen(process.env.PORT, () => {
   console.log("server running on http://localhost:5000");
 });

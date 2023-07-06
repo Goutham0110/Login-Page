@@ -4,14 +4,14 @@ import { useState } from "react";
 import './styles.css';
 
 
-const LoginPage =({checkLoginStatus})=>{
+const LoginPage =()=>{
 
     const [mailid,setMailid]=useState();
     const [password,setPassword]=useState();
     const [mandate,setMandate]=useState("");
     const [loading, setLoading]=useState(false);
     const navigate = useNavigate();
-    const loginAPI="http://localhost:5000/login";
+    const loginAPI=process.env.REACT_APP_LOGIN_API;
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -39,6 +39,7 @@ const LoginPage =({checkLoginStatus})=>{
             }
         }catch(err){
             setLoading(false)
+            console.log(loginAPI);
             setMandate("server down");
         }
     }

@@ -6,7 +6,7 @@ import SignupPage from "./components/SignupPage";
 import PageNotFound from "./components/PageNotFound";
 
 function App() {
-  const loginStatusAPI = "http://localhost:5000/login/status";
+  const loginStatusAPI = process.env.REACT_APP_CHECK_LOGIN_STATUS_API;
 
   async function checkLoginStatus() {
     try {
@@ -26,7 +26,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route
           path="/login"
-          element={<LoginPage checkLoginStatus={checkLoginStatus} />}
+          element={<LoginPage />}
         />
         <Route path="/signup" element={<SignupPage />} />
         <Route

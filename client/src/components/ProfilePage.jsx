@@ -18,7 +18,8 @@ const ProfilePage =({checkLoginStatus})=>{
     const [loggedIn,setLoggedIn]=useState(false);
     const [userFound,setUserFound]=useState();
     const [message,setMessage]=useState("");
-    const logoutAPI="http://localhost:5000/logout";
+    const logoutAPI=process.env.REACT_APP_LOGOUT_API;
+    const getProfileAPI=process.env.REACT_APP_GET_PROFILE_API;
 
     async function getUserData(){
         let userData=await checkLoginStatus();
@@ -28,7 +29,7 @@ const ProfilePage =({checkLoginStatus})=>{
         }else{
             setMessage("User Profile")
         }
-        const res=await fetch(`http://localhost:5000/profile/${profile}`,{
+        const res=await fetch(getProfileAPI+`/${profile}`,{
                     method:"GET",
                     headers:{ 'Content-Type': 'application/json' },
                     });

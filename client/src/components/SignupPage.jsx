@@ -13,7 +13,7 @@ const SignupPage=()=>{
     const navigate = useNavigate();
 
     const password= setpassword===confirmpassword?setpassword:null;
-    const signupAPI="http://localhost:5000/signup";
+    const signupAPI=process.env.REACT_APP_SIGNUP_API;
 
     async function handleSubmit(e){
         e.preventDefault();
