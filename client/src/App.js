@@ -6,7 +6,8 @@ import SignupPage from "./components/SignupPage";
 import PageNotFound from "./components/PageNotFound";
 
 function App() {
-  const loginStatusAPI = process.env.REACT_APP_CHECK_LOGIN_STATUS_API;
+  // const loginStatusAPI = process.env.REACT_APP_CHECK_LOGIN_STATUS_API;
+  const loginStatusAPI = "https://login-page-4pju.onrender.com/login/status";
 
   async function checkLoginStatus() {
     try {
@@ -18,7 +19,7 @@ function App() {
       const resJson = await res.json();
       return resJson;
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
 
@@ -26,10 +27,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
-        <Route
-          path="/login"
-          element={<LoginPage />}
-        />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route
           path="/profile/:profile"

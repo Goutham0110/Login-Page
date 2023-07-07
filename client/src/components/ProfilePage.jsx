@@ -18,8 +18,11 @@ const ProfilePage =({checkLoginStatus})=>{
     const [loggedIn,setLoggedIn]=useState(false);
     const [userFound,setUserFound]=useState();
     const [message,setMessage]=useState("");
-    const logoutAPI=process.env.REACT_APP_LOGOUT_API;
-    const getProfileAPI=process.env.REACT_APP_GET_PROFILE_API;
+    // const logoutAPI=process.env.REACT_APP_LOGOUT_API;
+    // const getProfileAPI=process.env.REACT_APP_GET_PROFILE_API;
+    const logoutAPI="https://login-page-4pju.onrender.com/logout";
+    const getProfileAPI="https://login-page-4pju.onrender.com/profile";
+
 
     async function getUserData(){
         let userData=await checkLoginStatus();

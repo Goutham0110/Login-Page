@@ -11,7 +11,8 @@ const LoginPage =()=>{
     const [mandate,setMandate]=useState("");
     const [loading, setLoading]=useState(false);
     const navigate = useNavigate();
-    const loginAPI=process.env.REACT_APP_LOGIN_API;
+    // const loginAPI=process.env.REACT_APP_LOGIN_API;
+    const loginAPI="https://login-page-4pju.onrender.com/login";
 
     async function handleSubmit(e){
         e.preventDefault();

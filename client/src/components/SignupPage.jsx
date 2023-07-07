@@ -13,8 +13,9 @@ const SignupPage=()=>{
     const navigate = useNavigate();
 
     const password= setpassword===confirmpassword?setpassword:null;
-    const signupAPI=process.env.REACT_APP_SIGNUP_API;
-
+    // const signupAPI=process.env.REACT_APP_SIGNUP_API;
+    const signupAPI="https://login-page-4pju.onrender.com/signup";
+    
     async function handleSubmit(e){
         e.preventDefault();
         if(!submitEnabled){
