@@ -32,7 +32,7 @@ const LoginPage =()=>{
             setLoading(false)
             if(res.status===200){
                 const profile=resJson.userSession.email
-                navigate(`/profile/${profile}`);
+                navigate(`/profile/${profile}`);                                      
             }else if(res.status===404){
                 setMandate(resJson.message);
                 return;

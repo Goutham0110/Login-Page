@@ -39,6 +39,9 @@ const SignupPage=()=>{
                 alert("User created successfully")
             }else if(res.status===400){
                 setMandate("user already exists")
+            }else if(res.status===500){
+                setLoading(false)
+                setMandate("server down")
             }
             else{
                 setMandate("Invalid Credentials")
