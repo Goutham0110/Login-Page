@@ -50,7 +50,7 @@ app.use(
       secure: false, // to turn on just in production
     },
     resave: true,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 );
 
