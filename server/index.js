@@ -34,6 +34,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
   cors({
+    origin: [process.env.CORS_ORIGIN],
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
@@ -43,7 +45,6 @@ app.use(
     secret: process.env.SECRET,
     name: "userSession", // cookies name to be put in "key" field in postman
     cookie: {
-      domain: process.env.COOKIE_DOMAIN,
       maxAge: 1000 * 60 * 60 * 24, // this is when our cookies will expired and the session will not be valid anymore (user will be log out)
       sameSite: false,
       secure: false, // to turn on just in production
