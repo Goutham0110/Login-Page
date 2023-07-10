@@ -78,13 +78,9 @@ exports.loginUser = async (req, res) => {
           });
         } else {
           const loginRecord = await LoginRecords.create(req.body);
-          const userSession = {
-            email: user[0].mail,
-          }; 
-          req.session.userSession = userSession; // attach user session to session object from express-session
           return res.status(200).json({
             msg: "You have logged in successfully",
-            userSession: userSession,
+            loginRecord: loginRecord,
           });
         }
       }
@@ -99,14 +95,6 @@ exports.loginUser = async (req, res) => {
 
 exports.logoutUser = async (req, res) => {
   try {
-    req.session.destroy((error) => {
-      if (error) throw error;
-      res.clearCookie("userSession"); // cleaning the cookies from the user session
-      res.status(200).json({
-        success: true,
-        message: "Logged Out",
-      });
-    });
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -115,17 +103,4 @@ exports.logoutUser = async (req, res) => {
   }
 };
 
-exports.loginStatus = async (req, res) => {
-  if (req.session.userSession) {
-    return res.status(200).json({
-      success: true,
-      message: "Authorized",
-      mail: req.session.userSession.email,
-    });
-  } else {
-    return res.status(401).json({
-      success: false,
-      message: "unauthorized",
-    });
-  }
-};
+exports.loginStatus = async (req, res) => {};
