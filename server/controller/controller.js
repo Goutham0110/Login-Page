@@ -1,6 +1,7 @@
 const { User } = require("../models/models");
 const { LoginRecords } = require("../models/models");
 const bcrypt = require("bcrypt");
+const jwt= require("jsonwebtoken");
 const dotenv = require("dotenv").config();
 const saltRounds = parseInt(process.env.SALTROUNDS);
 
@@ -66,7 +67,6 @@ exports.loginUser = async (req, res) => {
         message: "Invalid mail id, sign up",
       });
     }
-
     await bcrypt.compare(
       req.body.password,
       user[0].passwordHash,
@@ -78,8 +78,11 @@ exports.loginUser = async (req, res) => {
           });
         } else {
           const loginRecord = await LoginRecords.create(req.body);
+          const accessToken=jwt.sign(user, process.env.ACESS_TOKEN_SECRET)
+
           return res.status(200).json({
             msg: "You have logged in successfully",
+            accessToken:accessToken,
             loginRecord: loginRecord,
           });
         }
@@ -92,6 +95,10 @@ exports.loginUser = async (req, res) => {
     });
   }
 };
+
+exports.authenticateToken = (req,res)=>{
+
+}
 
 exports.logoutUser = async (req, res) => {
   try {

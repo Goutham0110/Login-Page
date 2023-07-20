@@ -11,8 +11,7 @@ const LoginPage =()=>{
     const [mandate,setMandate]=useState("");
     const [loading, setLoading]=useState(false);
     const navigate = useNavigate();
-    // const loginAPI=process.env.REACT_APP_LOGIN_API;
-    const loginAPI="https://login-page-4pju.onrender.com/login";
+    const loginAPI=process.env.REACT_APP_LOGIN_API;
 
     async function handleSubmit(e){
         e.preventDefault();
@@ -32,7 +31,6 @@ const LoginPage =()=>{
             const resJson= await res.json();
             setLoading(false)
             if(res.status===200){
-                const profile=resJson.userSession.email
                 navigate(`/profile/${profile}`);                                      
             }else if(res.status===404){
                 setMandate(resJson.message);

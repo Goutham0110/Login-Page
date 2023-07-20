@@ -12,6 +12,7 @@ const {
   userInfo,
   loginStatus,
   logoutUser,
+  authenticateToken
 } = require("./controller/controller");
 
 //db connection

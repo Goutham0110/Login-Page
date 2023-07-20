@@ -18,34 +18,13 @@ const ProfilePage =({checkLoginStatus})=>{
     const [loggedIn,setLoggedIn]=useState(false);
     const [userFound,setUserFound]=useState();
     const [message,setMessage]=useState("");
-    // const logoutAPI=process.env.REACT_APP_LOGOUT_API;
-    // const getProfileAPI=process.env.REACT_APP_GET_PROFILE_API;
-    const logoutAPI="https://login-page-4pju.onrender.com/logout";
-    const getProfileAPI="https://login-page-4pju.onrender.com/profile";
+    const logoutAPI=process.env.REACT_APP_LOGOUT_API;
+    const getProfileAPI=process.env.REACT_APP_GET_PROFILE_API;
+   
 
 
     async function getUserData(){
-        let userData=await checkLoginStatus();
-        if(userData.mail===profile){
-            setLoggedIn(true);
-            setMessage("Your Profile")
-        }else{
-            setMessage("User Profile")
-        }
-        const res=await fetch(getProfileAPI+`/${profile}`,{
-                    method:"GET",
-                    headers:{ 'Content-Type': 'application/json' },
-                    });
-        const user=await res.json();
-        if(user.data){
-            setUserFound(true);
-            setData({
-                name:user.data.name,
-                mail:user.data.mail,
-                signupDate:user.data.signupDate
-            })
-        }
-        setLoading(false);
+        
     }
 
     useEffect(()=>{
